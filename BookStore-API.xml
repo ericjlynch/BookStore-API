@@ -4,6 +4,31 @@
         <name>BookStore-API</name>
     </assembly>
     <members>
+        <member name="T:BookStore_API.Controllers.AuthorsController">
+            <summary>
+            Endpoint used to interact with Authors table in SQL Server
+            </summary>
+        </member>
+        <member name="M:BookStore_API.Controllers.AuthorsController.GetAuthors">
+            <summary>
+            Gets all authors
+            </summary>
+            <returns>List of Authors</returns>
+        </member>
+        <member name="M:BookStore_API.Controllers.AuthorsController.GetAuthor(System.Int32)">
+            <summary>
+            gets one author
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BookStore_API.Controllers.AuthorsController.CreateAuthor(BookStore_API.DTOs.AuthorCreateDTO)">
+            <summary>
+            Creates new author
+            </summary>
+            <param name="dto"></param>
+            <returns></returns>
+        </member>
         <member name="T:BookStore_API.Controllers.HomeController">
             <summary>
             This is a test api controller
