@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 
 namespace BookStore_API.Services
@@ -38,6 +39,11 @@ namespace BookStore_API.Services
         {
             var author = await _db.Authors.FindAsync(Id);
             return author;
+        }
+
+        public async Task<bool> IsExists(int id)
+        {
+            return await _db.Authors.AnyAsync(m => m.Id == id);
         }
 
         public async Task<bool> Save()
