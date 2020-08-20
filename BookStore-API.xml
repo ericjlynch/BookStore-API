@@ -37,6 +37,11 @@
             <param name="author"></param>
             <returns></returns>
         </member>
+        <member name="T:BookStore_API.Controllers.BooksController">
+            <summary>
+            Interacts with Books table in SQL Server
+            </summary>
+        </member>
         <member name="T:BookStore_API.Controllers.HomeController">
             <summary>
             This is a test api controller

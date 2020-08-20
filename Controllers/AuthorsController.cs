@@ -35,6 +35,8 @@ namespace BookStore_API.Controllers
         /// </summary>
         /// <returns>List of Authors</returns>
         [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+
         public async Task<IActionResult> GetAuthors()
         {
             try
@@ -197,6 +199,13 @@ namespace BookStore_API.Controllers
                 return InternalError($"Exception deleting author {id} \n {ex.Message}");
             }
         }
+                private string GetControllerActionNames()
+        {
+            var controller = ControllerContext.ActionDescriptor.ControllerName;
+            var action = ControllerContext.ActionDescriptor.ActionName;
+            return $"{controller} - {action}";
+        }
+
         private ObjectResult InternalError(string message)
         {
             _logger.LogError($"{message} when attempting to ");
