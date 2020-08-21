@@ -37,10 +37,37 @@
             <param name="author"></param>
             <returns></returns>
         </member>
+        <member name="M:BookStore_API.Controllers.AuthorsController.Delete(System.Int32)">
+            <summary>
+            Deletes one Author by Id
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
         <member name="T:BookStore_API.Controllers.BooksController">
             <summary>
             Interacts with Books table in SQL Server
             </summary>
+        </member>
+        <member name="M:BookStore_API.Controllers.BooksController.GetBooks">
+            <summary>
+            Gets a list of all books
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:BookStore_API.Controllers.BooksController.CreateBook(BookStore_API.DTOs.BookCreateDTO)">
+            <summary>
+            Creates a Book in SQL Server
+            </summary>
+            <param name="bookDTO"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BookStore_API.Controllers.BooksController.GetBook(System.Int32)">
+            <summary>
+            Gets the book by id
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
         </member>
         <member name="T:BookStore_API.Controllers.HomeController">
             <summary>

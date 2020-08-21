@@ -36,20 +36,21 @@ namespace BookStore_API.Controllers
         /// <returns>List of Authors</returns>
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
-
         public async Task<IActionResult> GetAuthors()
         {
+            var location = GetControllerActionNames();
             try
-            {
-                _logger.LogInfo("Attempted Get All Authors");
+            {                
+                _logger.LogInfo($"{location}: Attempt to Get all authors");
                 var authors = await _authorRepository.FindAll();
                 var response = _mapper.Map<IList<AuthorDTO>>(authors);
+                _logger.LogInfo("{location} successfully got all authors");
                 return Ok(response);
             }
             catch (Exception ex)
             {                
                 Debug.WriteLine(ex.Message);
-                return InternalError(ex.Message);
+                return InternalError($"{location}: failed for all authors - {ex.Message} - {ex.InnerException}");
             }
         }
 
@@ -61,6 +62,7 @@ namespace BookStore_API.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetAuthor(int id)
         {
+            var location = GetControllerActionNames();
             try
             {
                 _logger.LogInfo("Attempted Get Single Author");
@@ -77,7 +79,7 @@ namespace BookStore_API.Controllers
             catch (Exception ex)
             {                
                 Debug.WriteLine(ex.Message);
-                return InternalError(ex.Message);
+                return InternalError($"{location}: failed for all authors - {ex.Message} - {ex.InnerException}");
             }
         }
 
@@ -116,6 +118,8 @@ namespace BookStore_API.Controllers
 
                 //now you're pretty sure it succeeded
                 _logger.LogInfo("Created author successfully");
+
+                //Created is an IActionResult.
                 return Created("Create", new { author });
             }
             catch (Exception ex)
@@ -167,6 +171,11 @@ namespace BookStore_API.Controllers
 
         }
 
+        /// <summary>
+        /// Deletes one Author by Id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -199,7 +208,7 @@ namespace BookStore_API.Controllers
                 return InternalError($"Exception deleting author {id} \n {ex.Message}");
             }
         }
-                private string GetControllerActionNames()
+        private string GetControllerActionNames()
         {
             var controller = ControllerContext.ActionDescriptor.ControllerName;
             var action = ControllerContext.ActionDescriptor.ActionName;
