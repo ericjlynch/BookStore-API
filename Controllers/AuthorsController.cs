@@ -7,6 +7,7 @@ using AutoMapper;
 using BookStore_API.Contracts;
 using BookStore_API.Data;
 using BookStore_API.DTOs;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -35,6 +36,7 @@ namespace BookStore_API.Controllers
         /// </summary>
         /// <returns>List of Authors</returns>
         [HttpGet]
+        [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAuthors()
         {
@@ -60,6 +62,7 @@ namespace BookStore_API.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpGet("{id}")]
+        [AllowAnonymous]
         public async Task<IActionResult> GetAuthor(int id)
         {
             var location = GetControllerActionNames();
@@ -92,6 +95,7 @@ namespace BookStore_API.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [Authorize]
         public async Task<IActionResult> CreateAuthor([FromBody] AuthorCreateDTO dto)
         {
             _logger.LogInfo("author submission attempted in CreateAuthor in {[controller]}");
@@ -138,6 +142,7 @@ namespace BookStore_API.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [Authorize(Roles = "Administrator, Customer")]
         public async Task<IActionResult> UpdateAuthor(int id, [FromBody] AuthorUpdateDTO dto)
         {
             _logger.LogInfo($"Update author entered with id: {id}");
@@ -180,6 +185,7 @@ namespace BookStore_API.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [Authorize(Roles = "Customer")]
         public async Task<IActionResult> Delete(int id)
         {
             try

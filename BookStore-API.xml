@@ -69,6 +69,13 @@
             <param name="id"></param>
             <returns></returns>
         </member>
+        <member name="M:BookStore_API.Controllers.BooksController.Delete(System.Int32)">
+            <summary>
+            Removes a book by its Id
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
         <member name="T:BookStore_API.Controllers.HomeController">
             <summary>
             This is a test api controller
@@ -92,6 +99,13 @@
             Performs a Post
             </summary>
             <param name="value"></param>
+        </member>
+        <member name="M:BookStore_API.Controllers.UsersController.Login(BookStore_API.DTOs.UserDTO)">
+            <summary>
+            User login endpoint
+            </summary>
+            <param name="userDTO"></param>
+            <returns></returns>
         </member>
     </members>
 </doc>
