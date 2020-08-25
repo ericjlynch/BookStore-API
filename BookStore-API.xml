@@ -102,7 +102,7 @@
         </member>
         <member name="M:BookStore_API.Controllers.UsersController.Login(BookStore_API.DTOs.UserDTO)">
             <summary>
-            User Login Endpoint
+            User login endpoint
             </summary>
             <param name="userDTO"></param>
             <returns></returns>

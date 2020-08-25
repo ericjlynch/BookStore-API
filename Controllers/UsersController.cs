@@ -25,18 +25,18 @@ namespace BookStore_API.Controllers
         private readonly UserManager<IdentityUser> _userManager;
         private readonly ILoggerService _logger;
         private readonly IConfiguration _config;
-        public UsersController(SignInManager<IdentityUser> signInManager,
-            UserManager<IdentityUser> userManager,
-            ILoggerService logger,
-            IConfiguration config)
+
+        public UsersController(SignInManager<IdentityUser> signInManager, UserManager<IdentityUser> userManager, 
+            ILoggerService loggerService, IConfiguration configuration)
         {
             _signInManager = signInManager;
             _userManager = userManager;
-            _logger = logger;
-            _config = config;
+            _logger = loggerService;
+            _config = configuration;
         }
+
         /// <summary>
-        /// User Login Endpoint
+        /// User login endpoint
         /// </summary>
         /// <param name="userDTO"></param>
         /// <returns></returns>
@@ -44,34 +44,21 @@ namespace BookStore_API.Controllers
         [HttpPost]
         public async Task<IActionResult> Login([FromBody] UserDTO userDTO)
         {
-            var location = GetControllerActionNames();
-            try
-            {
-                var username = userDTO.UserName;
-                var password = userDTO.Password;
-                _logger.LogInfo($"{location}: Login Attempt from user {username} ");
-                var result = await _signInManager.PasswordSignInAsync(username, password, false, false);
+            var userName = userDTO.UserName;
+            var password = userDTO.Password;
+            var result = await _signInManager.PasswordSignInAsync(userName, password, false, false);
 
-                if (result.Succeeded)
-                {
-                    _logger.LogInfo($"{location}: {username} Successfully Authenticated");
-                    var user = await _userManager.FindByNameAsync(username);
-                    _logger.LogInfo($"{location}: Generating Token");
-                    var tokenString = await GenerateJSONWebToken(user);
-                    return Ok(new { token = tokenString });
-                }
-                _logger.LogInfo($"{location}: {username} Not Authenticated");
-                return Unauthorized(userDTO);
-            }
-            catch (Exception e)
+            if(result.Succeeded)
             {
-                return InternalError($"{location}: {e.Message} - {e.InnerException}");
+                var user = await _userManager.FindByNameAsync(userName);
+                var tokenString = await GenerateJSONWebToken(user);
+                return Ok(new { token = tokenString });
             }
+            return Unauthorized(userDTO); 
         }
-
         private async Task<string> GenerateJSONWebToken(IdentityUser user)
         {
-            Debug.WriteLine("config key: " + _config["key"]);
+            Debug.WriteLine("config key: " + _config["Jwt:Key"]);
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
             var claims = new List<Claim>
@@ -81,30 +68,18 @@ namespace BookStore_API.Controllers
                 new Claim(ClaimTypes.NameIdentifier, user.Id)
             };
             var roles = await _userManager.GetRolesAsync(user);
-            claims.AddRange(roles.Select(r => new Claim(ClaimsIdentity.DefaultRoleClaimType, r)));
-
-            var token = new JwtSecurityToken(_config["Jwt:Issuer"]
-                , _config["Jwt:Issuer"],
+            claims.AddRange(roles.Select(r => new Claim(ClaimsIdentity.DefaultNameClaimType, r)));
+            var token = new JwtSecurityToken(_config["Jwt:Issuer"],
+                _config["Jwt:Issuer"],
                 claims,
                 null,
                 expires: DateTime.Now.AddHours(5),
                 signingCredentials: credentials
-            );
+                );
+
+            Debug.WriteLine("Jwt issuer: " + _config["Jwt:Issuer"]);
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
-        private string GetControllerActionNames()
-        {
-            var controller = ControllerContext.ActionDescriptor.ControllerName;
-            var action = ControllerContext.ActionDescriptor.ActionName;
-
-            return $"{controller} - {action}";
-        }
-
-        private ObjectResult InternalError(string message)
-        {
-            _logger.LogError(message);
-            return StatusCode(500, "Something went wrong. Please contact the Administrator");
-        }
     }
 }
